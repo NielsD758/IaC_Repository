@@ -1,0 +1,19 @@
+users:
+  - name: devuser
+    shell: /bin/bash
+    state: present
+  - name: testuser
+    shell: /bin/bash
+    state: present
+  - name: olduser
+    state: absent
+
+files:
+  - path: /opt/demo_dir
+    state: directory
+    mode: '0755'
+  - path: /opt/demo_file.txt
+    state: file
+    mode: '0644'
+
+

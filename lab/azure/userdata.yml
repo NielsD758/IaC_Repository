@@ -1,0 +1,19 @@
+#cloud-config
+users:
+  - name: iac
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${ssh_key}
+
+write_files:
+  - path: /home/iac/hello.txt
+    content: "Hello World"
+    owner: iac:iac
+    permissions: '0644'
+    append: false
+    
+runcmd:
+  - mkdir -p /home/iac
+  - chown iac:iac /home/iac
+  - echo "Hello World" > /home/iac/hello.txt

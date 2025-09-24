@@ -1,0 +1,9 @@
+#cloud-config
+instance-id: ${name}
+local-hostname: ${name}
+
+network:
+  version: 2
+  ethernets:
+    ens192:
+      dhcp4: true

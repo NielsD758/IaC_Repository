@@ -1,0 +1,18 @@
+  #cloud-config
+users:
+  
+- name: ${ssh_username}
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  shell: /bin/bash
+  ssh-authorized-keys:
+    - ${public_key}
+
+package_update: true
+packages:
+  - open-vm-tools
+  - wget
+  - ntpdate
+
+runcmd:
+  - systemctl enable open-vm-tools
+  - systemctl start open-vm-tools

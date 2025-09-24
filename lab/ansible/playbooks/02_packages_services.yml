@@ -1,0 +1,20 @@
+---
+- name: Install and manage nginx on app servers
+  hosts: app
+  become: true   # nodig voor apt en systemctl
+  tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+      tags:
+        - packages
+
+    - name: Ensure nginx service is running and enabled
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+      tags:
+        - services

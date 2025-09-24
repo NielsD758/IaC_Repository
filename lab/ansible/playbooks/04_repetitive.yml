@@ -1,0 +1,31 @@
+---
+- name: Install packages based on group vars
+  hosts: all
+  become: true
+  tasks:
+    - name: Install packages for group
+      ansible.builtin.package:
+        name: "{{ packages | default([]) }}"
+        state: present
+
+- name: Manage users
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure users are configured
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        shell: "{{ item.shell | default('/bin/bash') }}"
+        state: "{{ item.state | default('present') }}"
+      loop: "{{ users | default([]) }}"
+
+- name: Manage files and directories
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure files and directories exist
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        mode: "{{ item.mode }}"
+      loop: "{{ files | default([]) }}"
