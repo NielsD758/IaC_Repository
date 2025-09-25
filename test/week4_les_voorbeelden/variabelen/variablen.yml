@@ -1,0 +1,28 @@
+---
+- name: Voorbeeld met variables
+  hosts: webservers
+  become: true
+
+  vars:
+    web_package: nginx
+    web_service: nginx
+    config_file: /etc/nginx/nginx.conf
+
+  tasks:
+    - name: Installeer webserver
+      apt:
+        name: "{{ web_package }}"
+        state: present
+      notify: Restart Webserver
+
+    - name: Plaats configuratiebestand
+      template:
+        src: nginx.conf.j2
+        dest: "{{ config_file }}"
+      notify: Restart Webserver
+
+  handlers:
+    - name: Restart Webserver
+      service:
+        name: "{{ web_service }}"
+        state: restarted

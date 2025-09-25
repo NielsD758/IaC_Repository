@@ -9,3 +9,19 @@ override.tf.json
 *_override.tf.json
 terraform.tfvars
 terraform.tfvars.json
+
+# Ansible
+*.retry
+*.log
+
+# Python (optioneel, soms handig bij Ansible roles/scripts)
+__pycache__/
+*.pyc
+*.pyo
+
+# OS / Editor bestanden
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

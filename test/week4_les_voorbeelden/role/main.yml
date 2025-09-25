@@ -1,0 +1,12 @@
+---
+- name: Installeer Nginx
+  apt:
+    name: "{{ nginx_package }}"
+    state: present
+  notify: Restart Nginx
+
+- name: Plaats configuratiebestand
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: Restart Nginx

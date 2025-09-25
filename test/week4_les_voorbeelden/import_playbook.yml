@@ -1,0 +1,9 @@
+# main.yml
+---
+- name: Main playbook
+  hosts: webservers
+  become: true
+
+  tasks:
+    - import_tasks: tasks/install_nginx.yml
+    - import_tasks: tasks/configure_nginx.yml

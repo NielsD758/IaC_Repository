@@ -1,0 +1,11 @@
+---
+- name: Voorbeeld playbook met register
+  hosts: all
+  tasks:
+    - name: Controleer uptime
+      command: uptime
+      register: uptime_result
+
+    - name: Toon output van uptime
+      debug:
+        msg: "De server uptime is: {{ uptime_result.stdout }}"

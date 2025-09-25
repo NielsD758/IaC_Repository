@@ -1,0 +1,13 @@
+# main.yml
+---
+- name: Main playbook
+  hosts: webservers
+  become: true
+  vars:
+    install_nginx: true
+
+  tasks:
+    - include_tasks: tasks/install_nginx.yml
+      when: install_nginx
+
+    - include_tasks: tasks/configure_nginx.yml
