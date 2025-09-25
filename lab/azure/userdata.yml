@@ -5,7 +5,7 @@ users:
     shell: /bin/bash
     ssh_authorized_keys:
       - ${ssh_key}
-
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDP9A++FWM36l4+NFCa9boHjFnve6QcX1jorWaOm4BZ/ terraform
 write_files:
   - path: /home/iac/hello.txt
     content: "Hello World"
