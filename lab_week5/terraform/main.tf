@@ -10,7 +10,7 @@ data "vsphere_datacenter" "dc" {
 }
 
 data "vsphere_datastore" "datastore" {
-  name          = "datastore1"
+  name          = "data_IaC"
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
