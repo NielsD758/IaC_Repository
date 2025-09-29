@@ -1,0 +1,14 @@
+---
+- name: Install Nginx without apt module
+  hosts: web
+  become: yes
+  tasks:
+    - name: Install Nginx via command
+      command: apt-get update && apt-get install -y nginx
+      register: nginx_install
+      changed_when: "'is already the newest version' not in nginx_install.stdout"
+
+    - name: Start Nginx service
+      command: systemctl start nginx
+      register: nginx_start
+      changed_when: nginx_start.rc == 0

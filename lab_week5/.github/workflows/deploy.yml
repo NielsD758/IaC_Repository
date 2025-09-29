@@ -1,0 +1,22 @@
+name: Deploy with Ansible
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Syntax check
+        run: ansible-playbook --syntax-check ansible/playbooks/install_apache.yml
+
+  deploy:
+    runs-on: self-hosted
+    needs: lint
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i ansible/inventory.ini ansible/playbooks/install_apache.yml

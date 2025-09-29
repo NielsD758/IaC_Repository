@@ -1,0 +1,12 @@
+---
+- name: Install Apache without apt module
+  hosts: web
+  become: yes
+  tasks:
+    - name: Install Apache2 via command
+      command: apt-get update && apt-get install -y apache2
+      register: apache_install
+      changed_when: "'is already the newest version' not in apache_install.stdout"
+
+    - name: Force a failure (demo)
+      command: /bin/doesnotexist
