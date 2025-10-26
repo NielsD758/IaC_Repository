@@ -1,0 +1,61 @@
+name: Hybrid Cloud Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure Azure credentials
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+
+      - name: Get Terraform outputs
+        working-directory: ./terraform
+        id: tf_outputs
+        run: |
+          echo "AZURE_VM_IP=$(terraform output -raw vm_public_ip)" >> $GITHUB_OUTPUT
+
+      - name: Add SSH private keys
+        run: |
+          echo "${{ secrets.AZURE_PRIVATE_KEY }}" > /tmp/azure_id_rsa
+          chmod 600 /tmp/azure_id_rsa
+          echo "${{ secrets.ESXI_PRIVATE_KEY }}" > /tmp/skylab_id_rsa
+          chmod 600 /tmp/skylab_id_rsa
+
+      - name: Prepare inventory
+        run: |
+          echo "[azure]" > inventory
+          echo "azure-vm ansible_host=${{ steps.tf_outputs.outputs.AZURE_VM_IP }} ansible_user=student ansible_ssh_private_key_file=/tmp/azure_id_rsa" >> inventory
+          echo "[esxi]" >> inventory
+          echo "esxi-vm ansible_host=${{ secrets.ESXI_VM_IP }} ansible_user=student ansible_ssh_private_key_file=/tmp/skylab_id_rsa" >> inventory
+          echo "[all:vars]" >> inventory
+          echo "ansible_become=true" >> inventory
+
+      - name: Install Ansible
+        run: |
+          sudo apt update && sudo apt install -y python3-pip
+          pip3 install ansible
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i inventory ansible/playbooks/deploy_app.yml

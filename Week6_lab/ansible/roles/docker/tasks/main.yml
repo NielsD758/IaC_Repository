@@ -1,0 +1,28 @@
+---
+- name: Ensure docker package installed
+  apt:
+    name:
+      - docker.io
+      - python3-pip
+    state: present
+    update_cache: yes
+
+- name: Ensure pip package docker-compose installed
+  pip:
+    name: docker-compose
+    executable: pip3
+
+- name: Copy docker-compose file to remote
+  copy:
+    src: ../../docker/docker-compose.yml
+    dest: /home/{{ ansible_user }}/docker-compose.yml
+    owner: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Launch docker-compose
+  become: true
+  become_user: "{{ ansible_user }}"
+  shell: |
+    docker-compose -f /home/{{ ansible_user }}/docker-compose.yml up -d
+  args:
+    chdir: /home/{{ ansible_user }}

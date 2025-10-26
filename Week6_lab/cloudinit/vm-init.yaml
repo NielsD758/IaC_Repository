@@ -1,0 +1,24 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+- docker.io
+- python3
+- python3-pip
+- git
+
+
+users:
+- name: student
+gecos: Student User
+sudo: ALL=(ALL) NOPASSWD:ALL
+groups: sudo
+ssh_authorized_keys:
+- ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDP9A++FWM36l4+NFCa9boHjFnve6QcX1jorWaOm4BZ/
+
+
+runcmd:
+- [ sh, -c, 'systemctl enable docker' ]
+- [ sh, -c, 'systemctl start docker' ]
+- [ sh, -c, 'usermod -aG docker student' ]
+- [ sh, -c, 'curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose' ]
