@@ -82,5 +82,5 @@ version = "latest"
 
 
 # cloud-init file used to bootstrap the VM (install docker, add user, etc.)
-custom_data = file("${path.module}/../cloudinit/vm-init.yaml")
+custom_data = base64encode(file("${path.module}/../cloudinit/vm-init.yaml"))
 }
